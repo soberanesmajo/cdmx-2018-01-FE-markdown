@@ -6,7 +6,7 @@
 ligero muy popular entre developers. Es usado en muchísimas plataformas que
 manejan texto plano (GitHub, foros, blogs, ...), y es muy común
 encontrar varios archivos en ese formato en cualquier tipo de repositorio
-(empezando por el tradicional `README.md`)
+(empezando por el tradicional `README.md`).
 
 Estos archivos `Markdown` normalmente contienen _links_ (vínculos/ligas) que
 muchas veces están rotos o ya no son válidos y eso perjudica mucho el valor de
@@ -23,12 +23,12 @@ algunas estadísticas.
 
 [Node.js](https://nodejs.org/es/) es un entorno de ejecución para JavaScript
 construido con el [motor de JavaScript V8 de Chrome](https://developers.google.com/v8/).
-Esto nos va a permitir ejecutar JavaScript en el entorno del sistema operativo,
-ya sea tu máquina o un servidor, lo cual nos abre las puertas para poder interactuar con
-el sistema operativo, sistema de archivos, redes, etc...
+Esto nos va a permitir ejecuta JavaScript en el entorno del sistema operativo,
+ya sea tu máquina o un servidor, lo cual nos abre las puertas para poder interac
+tuar con el sistema operativo, sistema de archivos, redes, ...
 En este proyecto nos alejamos un poco del navegador para construir un programa
 que se ejecute usando Node.js, donde aprenderemos sobre cómo interactuar con el
-sistema, archivos y con el entorno (proceso, env, stdin/stdout/stderr), ...
+sistema archivos, con el entorno (proceso, env, stdin/stdout/stderr), ...
 
 ## Objetivos
 
@@ -78,6 +78,7 @@ Tópicos:
 - [Semver](https://semver.org/)
 - [Path](https://nodejs.org/api/path.html)
 - [File System](https://nodejs.org/api/fs.html)
+- [marked](https://github.com/markedjs/marked)
 - [Asíncronía en js](https://carlosazaustre.com/manejando-la-asincronia-en-javascript/)
 
 ### Documentación requerida
@@ -90,7 +91,8 @@ En el archivo _README_ de tu proyecto tendrás que incluir:
 - Documentación de la Librería (Features, link de Demo, test, etc...).
 - Ejemplos (_snippets_) de uso.
 
-Y todo lo relevante para que cualquier developer que quiera usar tu librería pueda hacerlo sin inconvenientes
+Y todo lo relevante para que cualquier developer que quiera usar tu librería
+pueda hacerlo sin inconvenientes
 
 ### Archivos del proyecto
 
@@ -99,12 +101,14 @@ Y todo lo relevante para que cualquier developer que quiera usar tu librería pu
 - `index.js`: Desde este archivo debes exportar una función (`mdLinks`).
 - `package.json` con nombre, versión, descripción, autores, licencia,
   dependencias, scripts (pretest, test, ...)
+- `.editorconfig` con configuración para editores de texto. Este archivo no se
+  debe cambiar.
 - `.eslintrc` con configuración para linter. Este archivo no
   se debe cambiar.
 - `.gitignore` para ignorar `node_modules` u otras carpetas que no deban
   incluirse en control de versiones (`git`).
 - `test/md-links.spec.js` debe contener los tests unitarios para la función
-  `mdLinks()`tu implementación debe pasar estos tests.
+  `mdLinks()`tu inplementación debe pasar estos tets.
 
 ### JavaScript API
 
@@ -115,10 +119,15 @@ siguiente interfaz:
 
 ##### Argumentos
 
-- `path`: Ruta absoluta o relativa al archivo. Si la ruta pasada es relativa, debe resolverse como relativa al directorio desde donde se invoca node - _currentworking directory_.
+- `path`: Ruta absoluta o relativa al archivo o directorio. Si la ruta pasada es
+ relativa, debe resolverse como relativa al directorio desde donde se invoca
+ node - _currentworking directory_).
 
-- `options`: Un objeto con la siguiente propiedad:
-  - `validate`: Valor que determina si se desea validar los links encontrados en el archivo. (tipo de dato booleano)
+- `options`: Un objeto con las siguientes propiedades:
+  - `validate`: Valor que determina si se desea validar los links encontrados en
+   el archivo. (tipo de dato booleano)
+  - `stats`: Valor que determina si se desea calcular los stats de de los links
+  encontrados en el archivo. (tipo de dato booleano)
 
 ##### Valor de retorno
 
@@ -147,9 +156,18 @@ mdLinks("./some/example.md", { validate: true })
   })
   .catch(console.error);
 
-/*
- * HACKER EDITION
- */
+mdLinks("./some/example.md", { stats: true })
+  .then(links => {
+    // => [{total, unique }]
+  })
+  .catch(console.error);
+
+  mdLinks("./some/example.md", { stats: true, validate:true })
+  .then(links => {
+    // => [{total, unique, broken }]
+  })
+  .catch(console.error);
+
 mdLinks("./some/dir")
   .then(links => {
     // => [{ href, text, file }]
@@ -168,16 +186,16 @@ Por ejemplo:
 
 ```sh
 $ md-links ./some/example.md
-./some/example.md:10 http://algo.com/2/3/ Link a algo
-./some/example.md:15 https://otra-cosa.net/algun-doc.html algún doc
-./some/example.md:40 http://google.com/ Google
+./some/example.md http://algo.com/2/3/ Link a algo
+./some/example.md https://otra-cosa.net/algun-doc.html algún doc
+./some/example.md http://google.com/ Google
 ```
 
 El comportamiento por defecto no debe validar si las URLs responden ok o no,
 solo debe identificar el archivo markdown (a partir de la ruta que recibe como
 argumento), analizar el archivo Markdown e imprimir los links que vaya
-encontrando, junto con la ruta del archivo y la linea donde aparece, así como
-también el texto que hay dentro del link (truncado a 50 caracteres).
+encontrando, junto con la ruta del archivo donde aparece y el texto
+que hay dentro del link (truncado a 50 caracteres).
 
 #### Options
 
@@ -191,32 +209,95 @@ Por ejemplo:
 
 ```sh
 $ md-links ./some/example.md --validate
-./some/example.md:10 http://algo.com/2/3/ ok 200 Link a algo
-./some/example.md:15 https://otra-cosa.net/algun-doc.html fail 404 algún doc
-./some/example.md:40 http://google.com/ ok 301 Google
+./some/example.md http://algo.com/2/3/ ok 200 Link a algo
+./some/example.md https://otra-cosa.net/algun-doc.html fail 404 algún doc
+./some/example.md http://google.com/ ok 301 Google
 ```
 
 Vemos que el _output_ en este caso incluye la palabra `ok` o `fail` después de
 la URL, así como el status de la respuesta recibida a la petición HTTP a dicha
 URL.
 
+##### `--stats`
+
+Si pasamos la opción `--stats` el output (salida) será un texto con estadísticas
+básicas sobre los links.
+
+```sh
+$ md-links ./some/example.md --stats
+Total: 3
+Unique: 3
+```
+
+También podemos combinar `--stats` y `--validate` para obtener estadísticas que
+necesiten de los resultados de la validación.
+
+```sh
+$ md-links ./some/example.md --stats --validate
+Total: 3
+Unique: 3
+Broken: 1
+```
+
 ## Entregables
 
-Módulo instalable via `npm install <github-user>/md-links`. Este módulo debe
+Módulo instalable directamente desde el repositorio de Github via `npm install <github-user>/md-links`. Este módulo debe
 incluir tanto un ejecutable como una interfaz que podamos importar con `require`
 para usarlo programáticamente.
 
 ## Hacker edition
 
-- Detectar y recorrer carpetas (recursivamente)
-- Agregar una opción `--stats` para mostrar estadísticas del archivo, como
-cuántos links encontró.
+- Puedes agregar más estadísticas.
 - Integración continua con Travis o Circle CI.
 
 ## Pistas / Tips / Recursos
 
+### FAQs
+
+#### ¿Cómo hago para que mi módulo sea _instalable_ desde GitHub?
+
+Para que el módulo sea instalable desde GitHub solo tiene que:
+
+- Estar en un repo público de GitHub
+- Contener un `package.json` válido
+
+Con el comando `npm install githubname/reponame` podemos instalar directamente
+desde GitHub. Ver [docs oficiales de `npm install` acá](https://docs.npmjs.com/cli/install).
+
+Por ejemplo, el [`course-parser`](https://github.com/Laboratoria/course-parser)
+que usamos para la currícula no está publicado en el registro público de NPM,
+así que lo instalamos directamente desde GitHub con el comando `npm install
+Laboratoria/course-parser`.
+
+### Sugerencias de implementación
+
+La implementación de este proyecto tiene varias partes: leer del sistema de
+archivos, recibir argumentos a través de la línea de comando, analizar texto,
+hacer consultas HTTP, ... y todas estas cosas pueden enfocarse de muchas formas,
+tanto usando librerías como implementando en VanillaJS.
+
+Por poner un ejemplo, el _parseado_ (análisis) del markdown para extraer los
+links podría plantearse de las siguientes maneras (todas válidas):
+
+- Usando un _módulo_ como [markdown-it](https://github.com/markdown-it/markdown-it),
+  que nos devuelve un arreglo de _tokens_ que podemos recorrer para identificar
+  los links.
+- Siguiendo otro camino completamente, podríamos usar
+  [expresiones regulares (`RegExp`)](https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Regular_Expressions).
+- También podríamos usar una combinación de varios _módulos_ (podría ser válido
+  transformar el markdown a HTML usando algo como [marked](https://github.com/markedjs/marked)
+  y de ahí extraer los link con una librería de DOM como [JSDOM](https://github.com/jsdom/jsdom)
+  o [Cheerio](https://github.com/cheeriojs/cheerio) entre otras).
+- Usando un _custom renderer_ de [marked](https://github.com/markedjs/marked)
+  (`new marked.Renderer()`).
+
+No dudes en consultar a tus compañeras, coaches y/o el [foro de la comunidad](http://community.laboratoria.la/c/js)
+si tienes dudas existenciales con respecto a estas decisiones. No existe una
+"única" manera correcta :wink:
+
 ### Pistas
 
+- [Marked](https://github.com/markedjs/marked/blob/master/docs/USING_PRO.md)
 - [NPM](https://docs.npmjs.com/getting-started/what-is-npm)
 - [Publicar packpage](https://docs.npmjs.com/getting-started/publishing-npm-packages)
 - [Crear módulos en Node.js](https://docs.npmjs.com/getting-started/publishing-npm-packages)
@@ -224,49 +305,7 @@ cuántos links encontró.
 - [Leer un Directorio](https://nodejs.org/api/fs.html#fs_fs_readdir_path_options_callback)
 - [Path](https://nodejs.org/api/path.html)
 - [Linea de comando CLI](https://medium.com/netscape/a-guide-to-create-a-nodejs-command-line-package-c2166ad0452e)
-
-### Función que extrae links
-```javascript
-//Es necesario que instales marked como dependencia de tu proyecto
-//npm install --save marked
-const Marked = require('marked');
-
-// Función necesaria para extraer los links usando marked
-// (tomada desde biblioteca del mismo nombre y modificada para el ejercicio)
-// Recibe texto en markdown y retorna sus links en un arreglo
-function markdownLinkExtractor(markdown) {
-  const links = [];
-
-  const renderer = new Marked.Renderer();
-
-  // Taken from https://github.com/markedjs/marked/issues/1279
-  const linkWithImageSizeSupport = /^!?\[((?:\[[^\[\]]*\]|\\[\[\]]?|`[^`]*`|[^\[\]\\])*?)\]\(\s*(<(?:\\[<>]?|[^\s<>\\])*>|(?:\\[()]?|\([^\s\x00-\x1f()\\]*\)|[^\s\x00-\x1f()\\])*?(?:\s+=(?:[\w%]+)?x(?:[\w%]+)?)?)(?:\s+("(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)))?\s*\)/;
-
-  Marked.InlineLexer.rules.normal.link = linkWithImageSizeSupport;
-  Marked.InlineLexer.rules.gfm.link = linkWithImageSizeSupport;
-  Marked.InlineLexer.rules.breaks.link = linkWithImageSizeSupport;
-
-  renderer.link = function(href, title, text) {
-    links.push({
-      href: href,
-      text: text,
-      title: title,
-    });
-  };
-  renderer.image = function(href, title, text) {
-      // Remove image size at the end, e.g. ' =20%x50'
-      href = href.replace(/ =\d*%?x\d*%?$/, '');
-      links.push({
-        href: href,
-        text: text,
-        title: title,
-      });
-  };
-  Marked(markdown, {renderer: renderer});
-
-  return links;
-};
-```
+- [npm install githubname/reponame](https://docs.npmjs.com/cli/install)
 
 ### Tutoriales / NodeSchool workshoppers
 
@@ -296,7 +335,7 @@ function markdownLinkExtractor(markdown) {
 | Nomenclatura/semántica | 3              |
 | Funciones/modularidad  | 3              |
 | Estructuras de datos   | 2              |
-| Tests                  | 3              |
+| Tests                  | 4              |  |
 | **SCM**                |                |
 | Git                    | 3              |
 | GitHub                 | 3              |
@@ -325,7 +364,9 @@ habilidades blandas. Te aconsejamos revisar la rúbrica:
 
 ### General
 
-- [ ] Entrega el link del módulo publicado en npm
+Que sea instalable directamente desde el repositorio de Github
+
+- [ ] `npm install --global <github-user>/md-links`
 
 ### `README.md`
 
@@ -337,6 +378,7 @@ habilidades blandas. Te aconsejamos revisar la rúbrica:
 
 - [ ] El módulo exporta una función con la interfaz (API) esperada.
 - [ ] Implementa soporte para archivo individual
+- [ ] Implementa soporte para directorios
 - [ ] Implementa `options.validate`
 
 ### CLI
@@ -344,6 +386,8 @@ habilidades blandas. Te aconsejamos revisar la rúbrica:
 - [ ] Expone ejecutable `md-links` en el path (configurado en `package.json`)
 - [ ] Se ejecuta sin errores / output esperado
 - [ ] Implementa `--validate`
+- [ ] Implementa `--stats`
+- [ ] Implementa `--validate --stats`
 
 ### Pruebas / tests
 
