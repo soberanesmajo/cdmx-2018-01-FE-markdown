@@ -6,7 +6,7 @@ fs.readFile('./README.md', 'utf8', (err, data) => {
   if (err) {
     console.log('error: ', err);
   } else {
-    console.log(data);
+    // console.log(data);
   }
 });
 
@@ -17,7 +17,6 @@ fs.readFile('./README.md', 'utf8', (err, data) => {
     console.log('error: ', err);
   } else {
     let regEx = /((http:\/\/|https:\/\/|www\.)[^\s]+)/gim;
-    let txt = data;
     let newArray = data.match(regEx);
     console.log(newArray);
   }
