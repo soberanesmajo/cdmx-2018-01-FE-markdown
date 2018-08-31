@@ -1,0 +1,29 @@
+{
+  "name": "cdmx-2018-01-fe-markdown",
+  "version": "1.0.0",
+  "description": "creacion de libreria",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soberanesmajo/cdmx-2018-01-FE-markdown.git"
+  },
+  "keywords": [
+    "node",
+    "npm",
+    "markdown",
+    "library"
+  ],
+  "author": "Maria Jose Soberanes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/soberanesmajo/cdmx-2018-01-FE-markdown/issues"
+  },
+  "homepage": "https://github.com/soberanesmajo/cdmx-2018-01-FE-markdown#readme",
+  "dependencies": {
+    "eslint": "^5.4.0",
+    "jest": "^23.5.0"
+  }
+}
