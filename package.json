@@ -24,6 +24,7 @@
   "homepage": "https://github.com/soberanesmajo/cdmx-2018-01-FE-markdown#readme",
   "dependencies": {
     "eslint": "^5.4.0",
-    "jest": "^23.5.0"
+    "jest": "^23.5.0",
+    "path": "^0.12.7"
   }
 }
