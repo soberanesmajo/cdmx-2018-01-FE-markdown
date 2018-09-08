@@ -35,6 +35,7 @@ const dataArray = (linksArray, absoluteP) => {
     };
     newArray.push(dataObject);
   }
+  // console.log(newArray); borrar esto porfa
 };
 
 const getFetch = (linksArray) => { 
