@@ -18,6 +18,9 @@
   ],
   "author": "Maria Jose Soberanes",
   "license": "ISC",
+  "bin": {
+    "mdLinks": "./cli.js"
+  },
   "bugs": {
     "url": "https://github.com/soberanesmajo/cdmx-2018-01-FE-markdown/issues"
   },
