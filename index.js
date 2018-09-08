@@ -28,6 +28,8 @@ const getFetch = (newArray) => {
   for (i = 0; i < newArray.length; i++) {
     let urls = (newArray[i]);
     fetch(urls).then((res) => {
+      // console.log(res);
+      let resUrl = res.url; 
       let resStatus = res.status; 
       let resStatusText = res.statusText;
     })
