@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+const mdLinks = require('./index.js');
+
+
 const [,, ... args] = process.argv;
 
-console.log(`Hello World ${args}`);
+const path = (args[0]);
+
+mdLinks(path);

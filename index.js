@@ -2,10 +2,11 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const path = require('path');
 
-// Función para leer e identificar las URL's
 
-const readFileMd = () => {
-  fs.readFile('./README.md', 'utf8', (err, data) => {
+const mdLinks = (pathFile) => { // mdLinks
+  const absoluteP = path.resolve(pathFile);
+  // console.log(absoluteP);
+  fs.readFile(absoluteP, 'utf8', (err, data) => {
     if (err) {
       console.log('error: ', err);
     } else {
@@ -14,22 +15,35 @@ const readFileMd = () => {
       let regEx = /(http:\/\/|https:\/\/|www\.)[^\s][^)]+/g;
       // let linkText = data.match(regExTxt);
       // console.log(linkText);
-      let newArray = data.match(regEx);
-      getFetch(newArray);
-      getStats(newArray);
+      let linksArray = data.match(regEx);
+      dataArray(linksArray, absoluteP);
+      getFetch(linksArray);
+      getStats(linksArray);
     }
   });
 };
 
-readFileMd();
+module.exports = mdLinks;
 
-const getFetch = (newArray) => { 
-  // console.log(newArray);
-  for (i = 0; i < newArray.length; i++) {
-    let urls = (newArray[i]);
+const dataArray = (linksArray, absoluteP) => {
+  const newArray = [];
+  for (i = 0; i < linksArray.length; i++) {
+    const dataObject = {
+      href: linksArray[i],
+      text: null,
+      file: absoluteP
+    };
+    newArray.push(dataObject);
+  }
+};
+
+const getFetch = (linksArray) => { 
+  // console.log(linksArray);
+  for (i = 0; i < linksArray.length; i++) {
+    let urls = (linksArray[i]);
     fetch(urls).then((res) => {
       // console.log(res);
-      let resUrl = res.url; 
+      let resUrl = res.url;  
       let resStatus = res.status; 
       let resStatusText = res.statusText;
     })
@@ -37,8 +51,8 @@ const getFetch = (newArray) => {
   };
 };
 
-const getStats = (newArray) => {
-  // console.log(newArray);
-  let totalLinks = newArray.length; // total de links
+const getStats = (linksArray) => {
+  // console.log(linksArray);
+  let totalLinks = linksArray.length; // total de links
   // console.log(totalLinks);
 };
